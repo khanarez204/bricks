@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Bricks Marketing | Building Dreams, Delivering Investments + Admin Suite</title>
     <meta name="description" content="Premium real estate marketing and investment opportunities with advanced admin control.">
     
@@ -62,6 +62,19 @@
         .admin-scroll::-webkit-scrollbar { width: 6px; }
         .admin-scroll::-webkit-scrollbar-track { background: #1e1e1e; }
         .admin-scroll::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        
+        /* Fix chatbot on mobile */
+        @media (max-width: 640px) {
+            .chat-window-mobile {
+                position: fixed !important;
+                bottom: 80px !important;
+                right: 16px !important;
+                width: calc(100vw - 32px) !important;
+                max-width: 380px !important;
+                height: 500px !important;
+                left: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-brand-dark text-white font-sans overflow-x-hidden" 
@@ -176,7 +189,7 @@
                 </div>
             </section>
 
-            <!-- Investment ROI Tool (updated with PKR support) -->
+            <!-- Investment ROI Tool -->
             <section class="py-24 px-6" x-data="{ price: 1000000, rent: 5000 }">
                 <div class="max-w-7xl mx-auto glass rounded-[3rem] p-12 md:p-20 overflow-hidden relative"><div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center"><div><h2 class="text-4xl md:text-5xl font-serif mb-6">Calculate Your <span class="text-brand-gold">Future Yield</span></h2><p class="text-gray-400 mb-10">Use our AI-driven forecasting tool to estimate the return on your next property investment.</p><div class="space-y-8"><div><div class="flex justify-between mb-4"><span class="font-bold">Purchase Price</span><span class="text-brand-gold" x-text="formatCurrency(price)"></span></div><input type="range" x-model="price" min="500000" max="10000000" step="100000" class="w-full h-1 bg-brand-accent rounded-lg accent-brand-gold"></div><div><div class="flex justify-between mb-4"><span class="font-bold">Monthly Expected Rent</span><span class="text-brand-gold" x-text="formatCurrency(rent)"></span></div><input type="range" x-model="rent" min="2000" max="50000" step="500" class="w-full h-1 bg-brand-accent rounded-lg accent-brand-gold"></div></div></div><div class="bg-brand-gold p-12 rounded-[2rem] text-black text-center relative"><p class="uppercase font-bold tracking-widest mb-4">Estimated Net Annual ROI</p><div class="text-7xl md:text-8xl font-serif font-bold mb-6" x-text="((rent * 12 / price) * 100).toFixed(1) + '%'"></div><p class="text-black/60 font-medium">*Includes management and maintenance overhead estimates.</p><button class="mt-10 bg-black text-white px-8 py-4 rounded-full w-full font-bold hover:bg-brand-dark/80 transition-all uppercase tracking-widest text-sm">Download Full Report</button></div></div></div>
             </section>
@@ -278,7 +291,7 @@
         </div>
     </template>
 
-    <!-- ======================== ADMIN DASHBOARD (unchanged) ======================== -->
+    <!-- ======================== ADMIN DASHBOARD ======================== -->
     <template x-if="adminActive">
         <div class="fixed inset-0 z-[200] bg-black/95 backdrop-blur-lg overflow-y-auto p-6 admin-scroll">
             <div class="max-w-7xl mx-auto">
@@ -323,7 +336,7 @@
                 </div>
 
                 <!-- Bookings panel -->
-                <div x-show="adminTab==='bookings'" class="overflow-x-auto"><table class="w-full text-sm"><thead class="border-b border-white/20"><tr><th class="text-left p-3">ID</th><th>Property</th><th>Customer</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead><tbody><template x-for="book in bookings" :key="book.id"><tr class="border-b border-white/10"><td class="p-3" x-text="book.id.slice(0,6)"></td><td x-text="book.propertyTitle"></td><td x-text="book.fullName"></td><td x-text="book.phone"></td><td><span :class="{'text-green-400':book.status==='Approved','text-yellow-400':book.status==='Pending','text-red-400':book.status==='Rejected'}" x-text="book.status"></span></td><td><div class="flex gap-2"><button @click="updateBookingStatus(book.id,'Approved')" class="text-xs bg-green-700 px-2 py-1 rounded">Approve</button><button @click="updateBookingStatus(book.id,'Rejected')" class="text-xs bg-red-700 px-2 py-1 rounded">Reject</button><button @click="assignAgent(book.id)" class="text-xs bg-brand-gold/30 px-2 py-1 rounded">Agent</button></div></td></tr></template></tbody></table></div>
+                <div x-show="adminTab==='bookings'" class="overflow-x-auto"><table class="w-full text-sm"><thead class="border-b border-white/20"><tr><th class="text-left p-3">ID</th><th>Property</th><th>Customer</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead><tbody><template x-for="book in bookings" :key="book.id"><tr class="border-b border-white/10"><td class="p-3" x-text="book.id.slice(0,6)"></td><td x-text="book.propertyTitle"></td><td x-text="book.fullName"></td><td x-text="book.phone"></td><td><span :class="{'text-green-400':book.status==='Approved','text-yellow-400':book.status==='Pending','text-red-400':book.status==='Rejected'}" x-text="book.status"></span></td><td><div class="flex gap-2"><button @click="updateBookingStatus(book.id,'Approved')" class="text-xs bg-green-700 px-2 py-1 rounded">Approve</button><button @click="updateBookingStatus(book.id,'Rejected')" class="text-xs bg-red-700 px-2 py-1 rounded">Reject</button><button @click="assignAgent(book.id)" class="text-xs bg-brand-gold/30 px-2 py-1 rounded">Agent</button></div></div></td></tr></template></tbody></table></div>
                 
                 <!-- Leads panel -->
                 <div x-show="adminTab==='leads'" class="grid gap-3"><template x-for="lead in leads.slice().reverse()" :key="lead.id"><div class="glass p-4 rounded-xl"><div class="flex justify-between"><span class="font-bold" x-text="lead.name"></span><span class="text-xs text-gray-400" x-text="new Date(lead.date).toLocaleString()"></span></div><div class="text-sm" x-text="lead.email + ' | ' + lead.phone"></div><div class="text-xs text-brand-gold" x-text="lead.propertyInterest || 'General inquiry'"></div><div class="text-xs text-gray-400 mt-1" x-text="lead.conversationSummary?.slice(0,100)"></div></div></template></div>
@@ -350,16 +363,16 @@
         </div>
     </template>
 
-    <!-- AI Assistant Floating Widget (Enhanced) -->
+    <!-- AI Assistant Floating Widget - FIXED for mobile -->
     <div x-data="{ chatOpen: false, messages: [{ role: 'ai', text: 'Hello! I am your AI Investment Assistant. Need help booking a property or finding high-ROI deals?' }], userInput: '', tempBookingData: null }" 
-         class="fixed bottom-8 right-8 z-[100]">
-        <button @click="chatOpen = !chatOpen" class="w-16 h-16 rounded-full bg-brand-gold shadow-2xl flex items-center justify-center hover:rotate-12 transition-all"><i class="fa-solid fa-robot text-black text-2xl"></i></button>
-        <div x-show="chatOpen" x-transition class="absolute bottom-20 right-0 w-[380px] h-[550px] glass rounded-[2rem] shadow-2xl flex flex-col overflow-hidden border border-white/20" x-cloak>
-            <div class="p-6 bg-brand-gold flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-black rounded-full flex items-center justify-center"><i class="fa-solid fa-bolt text-brand-gold text-xs"></i></div><div><p class="text-black font-bold text-sm">Bricks AI Concierge</p><p class="text-black/60 text-[10px] font-bold uppercase">Online 24/7</p></div></div><button @click="chatOpen = false" class="text-black"><i class="fa-solid fa-xmark"></i></button></div>
-            <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-black/40" id="chatMessages">
-                <template x-for="msg in messages"><div :class="msg.role === 'ai' ? 'justify-start' : 'justify-end'" class="flex"><div :class="msg.role === 'ai' ? 'bg-white/10 text-white rounded-tr-2xl' : 'bg-brand-gold text-black rounded-tl-2xl'" class="max-w-[85%] p-4 rounded-b-2xl text-sm font-medium" x-text="msg.text"></div></div></template>
+         class="fixed bottom-6 right-6 z-[100]">
+        <button @click="chatOpen = !chatOpen" class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-gold shadow-2xl flex items-center justify-center hover:rotate-12 transition-all"><i class="fa-solid fa-robot text-black text-xl md:text-2xl"></i></button>
+        <div x-show="chatOpen" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-12 scale-90" x-transition:enter-end="opacity-100 translate-y-0 scale-100" class="fixed bottom-20 right-4 md:absolute md:bottom-20 md:right-0 w-[calc(100vw-32px)] md:w-[380px] max-w-[380px] h-[500px] glass rounded-[2rem] shadow-2xl flex flex-col overflow-hidden border border-white/20" style="left: auto; right: 16px;" x-cloak>
+            <div class="p-4 md:p-6 bg-brand-gold flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-black rounded-full flex items-center justify-center"><i class="fa-solid fa-bolt text-brand-gold text-xs"></i></div><div><p class="text-black font-bold text-sm">Bricks AI Concierge</p><p class="text-black/60 text-[10px] font-bold uppercase">Online 24/7</p></div></div><button @click="chatOpen = false" class="text-black hover:scale-125 transition-transform"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-black/40">
+                <template x-for="msg in messages"><div :class="msg.role === 'ai' ? 'justify-start' : 'justify-end'" class="flex"><div :class="msg.role === 'ai' ? 'bg-white/10 text-white rounded-tr-2xl' : 'bg-brand-gold text-black rounded-tl-2xl'" class="max-w-[85%] p-3 md:p-4 rounded-b-2xl text-sm font-medium" x-text="msg.text"></div></div></template>
             </div>
-            <div class="p-4 bg-brand-surface border-t border-white/10"><div class="flex gap-2"><input type="text" x-model="userInput" @keyup.enter="sendAIMessage" placeholder="Ask about properties or 'Book Golden Sands Villa'..." class="flex-1 bg-black/50 border border-white/10 rounded-full px-4 py-3 text-sm focus:outline-none focus:border-brand-gold"><button @click="sendAIMessage" class="bg-brand-gold text-black w-10 h-10 rounded-full"><i class="fa-solid fa-paper-plane text-xs"></i></button></div></div>
+            <div class="p-3 md:p-4 bg-brand-surface border-t border-white/10"><div class="flex gap-2"><input type="text" x-model="userInput" @keyup.enter="sendAIMessage" placeholder="Type your question..." class="flex-1 bg-black/50 border border-white/10 rounded-full px-4 py-3 text-sm focus:outline-none focus:border-brand-gold"><button @click="sendAIMessage" class="bg-brand-gold text-black w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane text-xs"></i></button></div></div>
         </div>
     </div>
 
@@ -399,6 +412,19 @@
                     let savedRate = localStorage.getItem('bricks_rate');
                     if(savedCurrency) this.selectedCurrency = savedCurrency;
                     if(savedRate) this.conversionRate = parseFloat(savedRate);
+                    
+                    // Listen for storage events to sync across tabs/windows
+                    window.addEventListener('storage', (e) => {
+                        if (e.key === 'bricks_properties') {
+                            this.properties = JSON.parse(e.newValue);
+                        }
+                        if (e.key === 'bricks_leads') this.leads = JSON.parse(e.newValue);
+                        if (e.key === 'bricks_bookings') this.bookings = JSON.parse(e.newValue);
+                        if (e.key === 'bricks_activities') this.recentActivities = JSON.parse(e.newValue);
+                        if (e.key === 'bricks_logo') this.customLogoUrl = e.newValue;
+                        if (e.key === 'bricks_currency') this.selectedCurrency = e.newValue;
+                        if (e.key === 'bricks_rate') this.conversionRate = parseFloat(e.newValue);
+                    });
                 },
                 loadData() { 
                     let p = localStorage.getItem('bricks_properties'); 
